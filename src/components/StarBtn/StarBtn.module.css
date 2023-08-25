@@ -1,0 +1,14 @@
+.favorite-button {
+  margin-right: 0.5rem;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.svg-icon {
+  fill: lightgray;
+}
+.svg-icon.is-starred {
+  stroke: black;
+}

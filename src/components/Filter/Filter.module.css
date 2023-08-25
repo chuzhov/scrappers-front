@@ -1,0 +1,44 @@
+.filter-input__wrapper {
+  position: relative;
+  height: min-content;
+  width: min-content;
+}
+.form {
+  font-size: 1rem;
+}
+
+.input {
+  width: 370px;
+  padding: 2px 25px 2px 4px;
+  font-size: 1rem;
+}
+
+.label {
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.inline-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 2px;
+
+  width: 20px;
+  height: 20px;
+
+  padding: 0;
+  border: none;
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.inline-btn:hover {
+  background-color: lightgrey;
+  border-radius: 50%;
+}
