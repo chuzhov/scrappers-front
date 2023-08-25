@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/scrappers-front/static/css/main.5f4dc319.css",
+    "main.js": "/scrappers-front/static/js/main.9994dff2.js",
+    "index.html": "/scrappers-front/index.html",
+    "main.5f4dc319.css.map": "/scrappers-front/static/css/main.5f4dc319.css.map",
+    "main.9994dff2.js.map": "/scrappers-front/static/js/main.9994dff2.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5f4dc319.css",
+    "static/js/main.9994dff2.js"
+  ]
+}
