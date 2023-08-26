@@ -29,16 +29,23 @@ function App() {
     const newSocket = io('http://127.0.0.1:4000', {
       reconnection: true,
       reconnectionAttempts: 2,
-    });
-
-    newSocket.on('disconnect', () => {
-      console.log('Соединение с сервером разорвано.');
-      setIsConnected(false);
+      query: {
+        email: 'some-email@gmail.com',
+      },
     });
 
     newSocket.on('connect', () => {
       console.log('Соединение установлено.');
       setIsConnected(true);
+    });
+
+    newSocket.on('status', jobStatus => {
+      if (jobStatus === 'scrapping') setIsFetching(true);
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('Соединение с сервером разорвано.');
+      setIsConnected(false);
     });
 
     newSocket.on('reportGenStatus', message => {
@@ -48,15 +55,21 @@ function App() {
     });
 
     // Move the event listener setup outside of handleGetData
-    newSocket.on('reportGenerated', ({ success, data }) => {
+    newSocket.on('reportGenerated', ({ success, data, dateString }) => {
       setIsFetching(false);
+      let msg = '';
       if (success) {
         const sheetName = 'EN';
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        XLSX.writeFile(workbook, 'yourFileName.xlsx');
+        const filename = `EN ${dateString}.xlsx`;
+        XLSX.writeFile(workbook, filename);
+        msg = `Каталог EN збережен в папці завантажень в файл ${filename}`;
+      } else {
+        msg = `Помилка під час стягування інформації: ${data}`;
       }
+      setTextStatus(prevTextStatus => [...prevTextStatus, msg]);
     });
 
     setSocket(newSocket);
