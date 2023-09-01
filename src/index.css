@@ -7,6 +7,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background: radial-gradient(
+      89.59% 89.59% at 50% 0%,
+      rgba(128, 224, 255, 0.29) 0%,
+      rgba(37, 124, 255, 0.01) 45%,
+      rgba(13, 16, 23, 0) 100%
+    ),
+    #0d1017;
+  /* background-size: 100% 4%; */
+  background-repeat: no-repeat;
 }
 
 code {

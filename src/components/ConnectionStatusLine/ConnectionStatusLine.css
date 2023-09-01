@@ -1,0 +1,13 @@
+.status-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.connected-status-line {
+  color: rgb(151, 176, 182);
+}
+.disconnected-status-line {
+  color: rgb(247, 71, 225);
+}

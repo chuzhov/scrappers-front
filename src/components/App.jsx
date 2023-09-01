@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import * as XLSX from 'xlsx';
+import ConnectionStatusLine from './ConnectionStatusLine/ConnectionStatusLine';
 
 function App() {
   const [socket, setSocket] = useState(null);
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [textStatus, setTextStatus] = useState([]);
 
@@ -64,8 +65,13 @@ function App() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
         const filename = `EN ${dateString}.xlsx`;
-        XLSX.writeFile(workbook, filename);
-        msg = `Каталог EN збережен в папці завантажень в файл ${filename}`;
+        try {
+          XLSX.writeFile(workbook, filename);
+          msg = `Каталог EN збережен в папці завантажень в файл ${filename}`;
+          newSocket.emit('setJobDone');
+        } catch (error) {
+          msg = `Помилка під час збереження файлу: ${error?.message}`;
+        }
       } else {
         msg = `Помилка під час стягування інформації: ${data}`;
       }
@@ -79,14 +85,14 @@ function App() {
     };
   }, []);
 
+  //DEBUG ONLY
   useEffect(() => {
-    //DEBUG ONLY
     console.dir(textStatus);
   }, [textStatus]);
 
   const handleGetData = () => {
     if (socket) {
-      socket.emit('generateReport', {});
+      socket.emit('generateReport', { email: 'some-email@gmail.com' });
       setIsFetching(true);
     }
   };
@@ -107,16 +113,15 @@ function App() {
 
   return (
     <div>
-      <h1>Збирач даних із сайту Постачальника</h1>
-      <p>
-        Status:{' '}
-        {isConnected
-          ? "З'єднання із сервером встановлено"
-          : "Немає зв'язку із сайтом"}
-      </p>
+      <h1 style={{ color: 'white', textAlign: 'center' }}>
+        Збирач даних із сайтів Постачальників
+      </h1>
+
+      <ConnectionStatusLine isConnected={isConnected} />
+
       {isConnected ? (
         <button onClick={handleGetData} disabled={isFetching}>
-          GET DATA
+          ПОЧАТИ ЗБІР ДАНИХ
         </button>
       ) : (
         <button onClick={handleRestoreConnection}>Restore Connection</button>
@@ -125,6 +130,7 @@ function App() {
       <div
         ref={categorieListRef}
         style={{
+          color: 'whitesmoke',
           marginTop: '8px',
           height: '300px',
           overflowY: 'auto',
@@ -132,12 +138,9 @@ function App() {
         }}
       >
         <ul>
-          <li>EN сайт</li>
-          {Array.isArray(textStatus) ? (
-            textStatus.map((item, index) => <li key={index}>{item}</li>)
-          ) : (
-            <p>`textStatus is not an array. {textStatus}`</p>
-          )}
+          {textStatus.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
         </ul>
       </div>
     </div>
