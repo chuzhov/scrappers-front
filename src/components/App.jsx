@@ -7,7 +7,7 @@ import ScrappingDashboard from './ScrappingDashboard/ScrappingDashboard';
 const USER_EMAIL = 'some-email@gmail.com';
 //const SERVER_URL = 'http://127.0.0.1:4000';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-console.dir(process.env);
+console.dir(SERVER_URL);
 const TARGETS = ['EN'];
 
 function App() {
