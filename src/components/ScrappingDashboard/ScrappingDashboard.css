@@ -1,0 +1,23 @@
+.dashboard-wrapper {
+  margin-top: 40px;
+  padding: 1rem;
+  /* display: flex; */
+
+  width: 320px;
+  height: 320px;
+
+  background-color: rgb(20, 23, 33);
+  border-radius: 3px;
+  border-color: rgb(41, 45, 54);
+  border-width: 2px;
+}
+
+.dash__title {
+  color: rgb(200, 210, 218);
+}
+.dash__site-name {
+  color: rgb(129, 166, 226);
+}
+.dash__regular {
+  color: rgb(136, 146, 160);
+}

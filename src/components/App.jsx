@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import * as XLSX from 'xlsx';
 import ConnectionStatusLine from './ConnectionStatusLine/ConnectionStatusLine';
+import ScrappingDashboard from './ScrappingDashboard/ScrappingDashboard';
+
+const USER_EMAIL = 'some-email@gmail.com';
+//const SERVER_URL = 'http://127.0.0.1:4000';
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+console.dir(process.env);
+const TARGETS = ['EN'];
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -27,11 +34,11 @@ function App() {
   }
 
   useEffect(() => {
-    const newSocket = io('http://127.0.0.1:4000', {
+    const newSocket = io(SERVER_URL, {
       reconnection: true,
       reconnectionAttempts: 2,
       query: {
-        email: 'some-email@gmail.com',
+        email: USER_EMAIL,
       },
     });
 
@@ -40,7 +47,7 @@ function App() {
       setIsConnected(true);
     });
 
-    newSocket.on('status', jobStatus => {
+    newSocket.on('status', ({ target, jobStatus }) => {
       if (jobStatus === 'scrapping') setIsFetching(true);
     });
 
@@ -49,26 +56,26 @@ function App() {
       setIsConnected(false);
     });
 
-    newSocket.on('reportGenStatus', message => {
-      console.dir(message);
-      const formattedMsg = handleReportGenStatusMsg(message);
+    newSocket.on('reportGenStatus', ({ target, msg }) => {
+      console.dir(msg);
+      const formattedMsg = handleReportGenStatusMsg(msg);
       setTextStatus(prevTextStatus => [...prevTextStatus, formattedMsg]);
     });
 
     // Move the event listener setup outside of handleGetData
-    newSocket.on('reportGenerated', ({ success, data, dateString }) => {
+    newSocket.on('reportGenerated', ({ target, success, data, dateString }) => {
       setIsFetching(false);
       let msg = '';
       if (success) {
-        const sheetName = 'EN';
+        const sheetName = target;
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        const filename = `EN ${dateString}.xlsx`;
+        const filename = `${target} ${dateString}.xlsx`;
         try {
           XLSX.writeFile(workbook, filename);
-          msg = `Каталог EN збережен в папці завантажень в файл ${filename}`;
-          newSocket.emit('setJobDone');
+          msg = `Каталог збережен в папці завантажень в файл ${filename}`;
+          newSocket.emit('setJobDone', TARGETS[0]);
         } catch (error) {
           msg = `Помилка під час збереження файлу: ${error?.message}`;
         }
@@ -92,7 +99,7 @@ function App() {
 
   const handleGetData = () => {
     if (socket) {
-      socket.emit('generateReport', { email: 'some-email@gmail.com' });
+      socket.emit('generateReport', { email: USER_EMAIL, target: TARGETS[0] });
       setIsFetching(true);
     }
   };
@@ -118,6 +125,8 @@ function App() {
       </h1>
 
       <ConnectionStatusLine isConnected={isConnected} />
+
+      <ScrappingDashboard />
 
       {isConnected ? (
         <button onClick={handleGetData} disabled={isFetching}>
