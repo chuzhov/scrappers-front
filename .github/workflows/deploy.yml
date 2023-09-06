@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create .env
-          run: |
-            touch .env
-            echo "${{ secrets.MY_VAR }}" >> .env
+        run: |
+          touch .env
+          echo "${{ secrets.MY_VAR }}" >> .env
 
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
