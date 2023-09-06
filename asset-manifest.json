@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/scrappers-front/static/css/main.c032df7c.css",
-    "main.js": "/scrappers-front/static/js/main.03fb1c9f.js",
+    "main.js": "/scrappers-front/static/js/main.f6b8da90.js",
     "index.html": "/scrappers-front/index.html",
     "main.c032df7c.css.map": "/scrappers-front/static/css/main.c032df7c.css.map",
-    "main.03fb1c9f.js.map": "/scrappers-front/static/js/main.03fb1c9f.js.map"
+    "main.f6b8da90.js.map": "/scrappers-front/static/js/main.f6b8da90.js.map"
   },
   "entrypoints": [
     "static/css/main.c032df7c.css",
-    "static/js/main.03fb1c9f.js"
+    "static/js/main.f6b8da90.js"
   ]
 }
