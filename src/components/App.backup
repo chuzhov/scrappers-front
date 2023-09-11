@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import * as XLSX from 'xlsx';
 import ConnectionStatusLine from './ConnectionStatusLine/ConnectionStatusLine';
 import ScrappingDashboard from './ScrappingDashboard/ScrappingDashboard';
-import handleReportGenStatusMsg from 'utils/handleReportStatusMsg';
 
 const USER_EMAIL = 'some-email@gmail.com';
 //const SERVER_URL = 'http://127.0.0.1:4000';
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+console.dir(process.env);
+console.log('Server URL: ', SERVER_URL);
 const TARGETS = ['EN'];
 
 function App() {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [textStatus, setTextStatus] = useState([]);
 
-  /* eslint-disable */
-  const INIT_DASH_STATE = TARGETS.map(t => ({
-    target: t,
-    isFetching: false,
-    data: {
-      progressMsg: [],
-      dateString: '',
-      report: null,
-    },
-  }));
-  /* eslint-enable */
-  const [dashboardData, setDashboardData] = useState(INIT_DASH_STATE);
+  function handleReportGenStatusMsg(msg) {
+    function generateIndent(branch) {
+      const figureSpace = '\u2007'; // FIGURE SPACE
+      const pipe = '│';
+      if (branch) {
+        return branch === 'last'
+          ? figureSpace.repeat(3)
+          : `${pipe}${figureSpace.repeat(2)}`;
+      } else return '';
+    }
+    const { name, type, branch0 = '', branch1 = '' } = msg;
+    const heading = type === 'middle' ? '├──' : '└──';
+    const branch =
+      generateIndent(branch0) + generateIndent(branch1) + heading + name;
+    return branch;
+  }
 
   useEffect(() => {
     const newSocket = io(SERVER_URL, {
@@ -42,16 +49,7 @@ function App() {
     });
 
     newSocket.on('status', ({ target, jobStatus }) => {
-      if (jobStatus === 'scrapping') {
-        setDashboardData(prevDashboardData => {
-          return prevDashboardData.map(item => {
-            if (item.target === target) {
-              item.isFetching = true;
-            }
-            return item;
-          });
-        });
-      }
+      if (jobStatus === 'scrapping') setIsFetching(true);
     });
 
     newSocket.on('disconnect', () => {
@@ -60,30 +58,14 @@ function App() {
     });
 
     newSocket.on('reportGenStatus', ({ target, msg }) => {
+      console.dir(msg);
       const formattedMsg = handleReportGenStatusMsg(msg);
-      setDashboardData(prevDashboardData => {
-        return prevDashboardData.map(item => {
-          if (item.target === target) {
-            console.log(formattedMsg);
-            item.data.progressMsg.push(formattedMsg);
-          }
-          return item;
-        });
-      });
+      setTextStatus(prevTextStatus => [...prevTextStatus, formattedMsg]);
     });
 
     // Move the event listener setup outside of handleGetData
     newSocket.on('reportGenerated', ({ target, success, data, dateString }) => {
-      setDashboardData(prevDashboardData => {
-        return prevDashboardData.map(item => {
-          if (item.target === target) {
-            item.isFetching = false;
-            item.data.dateString = dateString;
-            item.data.report = data;
-          }
-          return item;
-        });
-      });
+      setIsFetching(false);
       let msg = '';
       if (success) {
         const sheetName = target;
@@ -101,14 +83,7 @@ function App() {
       } else {
         msg = `Помилка під час стягування інформації: ${data}`;
       }
-      setDashboardData(prevDashboardData => {
-        return prevDashboardData.map(item => {
-          if (item.target === target) {
-            item.data.progressMsg.push(msg);
-          }
-          return item;
-        });
-      });
+      setTextStatus(prevTextStatus => [...prevTextStatus, msg]);
     });
 
     setSocket(newSocket);
@@ -118,11 +93,31 @@ function App() {
     };
   }, []);
 
+  //DEBUG ONLY
+  useEffect(() => {
+    console.dir(textStatus);
+  }, [textStatus]);
+
+  const handleGetData = () => {
+    if (socket) {
+      socket.emit('generateReport', { email: USER_EMAIL, target: TARGETS[0] });
+      setIsFetching(true);
+    }
+  };
+
   const handleRestoreConnection = () => {
     if (!isConnected) {
       socket.connect();
     }
   };
+
+  const categorieListRef = useRef(null);
+  const scrollToBottom = () => {
+    categorieListRef.current.scrollTop = categorieListRef.current.scrollHeight;
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [textStatus]);
 
   return (
     <div>
@@ -131,17 +126,33 @@ function App() {
       </h1>
 
       <ConnectionStatusLine isConnected={isConnected} />
+
+      <ScrappingDashboard />
+
       {isConnected ? (
-        <ScrappingDashboard
-          user={USER_EMAIL}
-          isConnected={isConnected}
-          socket={socket}
-          target={TARGETS[0]}
-          data={dashboardData[0]}
-        />
+        <button onClick={handleGetData} disabled={isFetching}>
+          ПОЧАТИ ЗБІР ДАНИХ
+        </button>
       ) : (
         <button onClick={handleRestoreConnection}>Restore Connection</button>
       )}
+
+      <div
+        ref={categorieListRef}
+        style={{
+          color: 'whitesmoke',
+          marginTop: '8px',
+          height: '300px',
+          overflowY: 'auto',
+          fontFamily: 'Consolas, Courier New, sans-serif',
+        }}
+      >
+        <ul>
+          {textStatus.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

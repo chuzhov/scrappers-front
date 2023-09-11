@@ -3,7 +3,7 @@
   padding: 1rem;
   /* display: flex; */
 
-  width: 320px;
+  width: 600px;
   height: 320px;
 
   background-color: rgb(20, 23, 33);
@@ -20,4 +20,12 @@
 }
 .dash__regular {
   color: rgb(136, 146, 160);
+}
+
+.scraper-progress {
+  color: whitesmoke;
+  margin-top: 8px;
+  height: 100px;
+  overflow-y: auto;
+  font-family: Consolas, Courier New, sans-serif;
 }
