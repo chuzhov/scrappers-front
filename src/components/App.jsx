@@ -23,6 +23,8 @@ function App() {
       dateString: '',
       report: null,
     },
+    previousDate: '',
+    previousLength: 0,
   }));
   /* eslint-enable */
   const [dashboardData, setDashboardData] = useState(INIT_DASH_STATE);

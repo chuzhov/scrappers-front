@@ -26,14 +26,21 @@ const ScrappingDashboard = ({ user, socket, isConnected, target, data }) => {
       <p className="dash__title">
         Сайт: <span className="dash__site-name">{data.target}</span>
       </p>
-      <p className="dash__regular">
-        Час останнього сканування: <span>2023-09-03 20:00</span>
-      </p>
+
+      {data.previousDate && (
+        <>
+          <p className="dash__regular">
+            Час попереднього сканування: <span>{data.previousDate}</span>
+          </p>
+          <p className="dash__regular">
+            Кількість строк в каталозі: <span>{data.previousLength}</span>
+          </p>
+        </>
+      )}
 
       <button onClick={handleGetData} disabled={isFetching}>
         ПОЧАТИ ЗБІР ДАНИХ
       </button>
-
       <div ref={categorieListRef} className="scraper-progress">
         <ul>
           {data.data.progressMsg.map((item, index) => (
