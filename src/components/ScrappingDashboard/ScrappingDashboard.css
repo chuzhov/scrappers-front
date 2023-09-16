@@ -1,5 +1,6 @@
+@import '../../variables.css';
 .dashboard-wrapper {
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 1rem;
   /* display: flex; */
 
@@ -13,25 +14,154 @@
 }
 
 .dash__title {
-  color: rgb(200, 210, 218);
+  color: var(--highlited-color);
 }
 .dash__site-name {
-  color: rgb(129, 166, 226);
+  color: var(--target-EN-color);
 }
 .dash__regular {
-  color: rgb(136, 146, 160);
+  color: var(--primary-color);
 }
 
 .scraper-progress {
-  color: whitesmoke;
+  color: var(--primary-color);
   margin-top: 8px;
   height: 100px;
   overflow-y: auto;
   font-family: Consolas, Courier New, sans-serif;
+}
 
-  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
-    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
-    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
-    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
-    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+.pb-container {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
+
+.pb-container .pb-button {
+  background: transparent;
+  border: 2px solid #97b0b6;
+  border-radius: 16px;
+  color: #97b0b6;
+  text-shadow: rgba(45, 255, 196, 0.9) 0 0 1px;
+  cursor: pointer;
+  padding: 0.7em 1em;
+  text-decoration: none;
+  text-align: center;
+  height: 54px;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+
+  transition: background-color 0.3s, width 0.3s, border-width 0.3s,
+    border-color 0.3s, border-radius 0.3s, box-shadow 0.5s;
+  -webkit-box-shadow: 0px 0px 8px 2px rgba(45, 255, 196, 0.9);
+  -moz-box-shadow: 0px 0px 8px 2px rgba(45, 255, 196, 0.9);
+  box-shadow: 0px 0px 4px 1px rgba(45, 255, 196, 0.9);
+}
+
+.pb-container .pb-button:hover {
+  box-shadow: 0px 0px 20px 7px rgba(45, 255, 196, 0.9);
+}
+
+.pb-container .pb-button span {
+  display: inherit;
+  transition: opacity 0.3s 0.1s;
+  font-size: 1rem;
+  font-weight: 100;
+}
+
+.pb-container .pb-button svg {
+  height: 54px;
+  width: 54px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.pb-container .pb-button svg path {
+  opacity: 0;
+  fill: none;
+}
+
+.pb-container .pb-button svg.pb-progress-circle {
+  animation: spin 0.9s infinite cubic-bezier(0.085, 0.26, 0.935, 0.71);
+}
+
+.pb-container .pb-button svg.pb-progress-circle path {
+  stroke: currentColor;
+  stroke-width: 5;
+}
+
+.pb-container .pb-button svg.pb-checkmark path,
+.pb-container .pb-button svg.pb-cross path {
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.pb-container.disabled .pb-button {
+  cursor: not-allowed;
+}
+
+.pb-container.loading .pb-button {
+  width: 54px;
+  height: 54px;
+  border-width: 6.5px;
+  border-color: #ddd;
+  cursor: wait;
+  background-color: transparent;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.pb-container.loading .pb-button span {
+  transition: all 0.15s;
+  opacity: 0;
+  display: none;
+}
+
+.pb-container.loading .pb-button .pb-progress-circle > path {
+  transition: opacity 0.15s 0.3s;
+  opacity: 1;
+}
+
+.pb-container.success .pb-button {
+  border-color: #a0d468;
+  background-color: #a0d468;
+}
+
+.pb-container.success .pb-button span {
+  transition: all 0.15s;
+  opacity: 0;
+  display: none;
+}
+
+.pb-container.success .pb-button .pb-checkmark > path {
+  opacity: 1;
+}
+
+.pb-container.error .pb-button {
+  border-color: #ed5565;
+  background-color: #ed5565;
+}
+
+.pb-container.error .pb-button span {
+  transition: all 0.15s;
+  opacity: 0;
+  display: none;
+}
+
+.pb-container.error .pb-button .pb-cross > path {
+  opacity: 1;
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center;
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+    transform-origin: center center;
+  }
 }

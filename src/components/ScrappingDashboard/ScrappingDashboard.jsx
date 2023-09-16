@@ -1,13 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+
+import ProgressButton from 'react-progress-button';
+
 import './ScrappingDashboard.css';
 
-const ScrappingDashboard = ({ user, socket, isConnected, target, data }) => {
-  const [isFetching, setIsFetching] = useState(false);
-
+const ScrappingDashboard = ({
+  user,
+  socket,
+  isConnected,
+  isFetching,
+  setIsFetching,
+  target,
+  data,
+}) => {
   const handleGetData = () => {
     if (socket) {
       socket.emit('generateReport', { email: user, target });
-      setIsFetching(true);
+      setIsFetching(prevDashboardData => {
+        return prevDashboardData.map(item => {
+          if (item.target === target) {
+            item.isFetching = true;
+          }
+          return item;
+        });
+      });
     }
   };
 
@@ -26,7 +42,6 @@ const ScrappingDashboard = ({ user, socket, isConnected, target, data }) => {
       <p className="dash__title">
         Сайт: <span className="dash__site-name">{data.target}</span>
       </p>
-
       {data.previousDate && (
         <>
           <p className="dash__regular">
@@ -37,10 +52,16 @@ const ScrappingDashboard = ({ user, socket, isConnected, target, data }) => {
           </p>
         </>
       )}
+      <div>
+        <ProgressButton
+          onClick={handleGetData}
+          state={isFetching ? 'loading' : ''}
+        >
+          Стягнути дані
+        </ProgressButton>
+      </div>
 
-      <button onClick={handleGetData} disabled={isFetching}>
-        ПОЧАТИ ЗБІР ДАНИХ
-      </button>
+      {/* <button onClick={handleGetData} disabled={isFetching}></button> */}
       <div ref={categorieListRef} className="scraper-progress">
         <ul>
           {data.data.progressMsg.map((item, index) => (

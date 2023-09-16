@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import ConnectionStatusLine from './ConnectionStatusLine/ConnectionStatusLine';
 import ScrappingDashboard from './ScrappingDashboard/ScrappingDashboard';
 import handleReportGenStatusMsg from 'utils/handleReportStatusMsg';
+import Footer from './Fotter/Footer';
 
 const USER_EMAIL = 'some-email@gmail.com';
 //const SERVER_URL = 'http://127.0.0.1:4000';
@@ -19,6 +20,7 @@ function App() {
     target: t,
     isFetching: false,
     data: {
+      jobId: null,
       progressMsg: [],
       dateString: '',
       report: null,
@@ -39,7 +41,7 @@ function App() {
     });
 
     newSocket.on('connect', () => {
-      console.log('Соединение установлено.');
+      console.log('Connected to my server.');
       setIsConnected(true);
     });
 
@@ -57,7 +59,7 @@ function App() {
     });
 
     newSocket.on('disconnect', () => {
-      console.log('Соединение с сервером разорвано.');
+      console.log('Disconnected from my server.');
       setIsConnected(false);
     });
 
@@ -75,43 +77,47 @@ function App() {
     });
 
     // Move the event listener setup outside of handleGetData
-    newSocket.on('reportGenerated', ({ target, success, data, dateString }) => {
-      setDashboardData(prevDashboardData => {
-        return prevDashboardData.map(item => {
-          if (item.target === target) {
-            item.isFetching = false;
-            item.data.dateString = dateString;
-            item.data.report = data;
-          }
-          return item;
+    newSocket.on(
+      'reportGenerated',
+      ({ jobId, target, success, data, dateString }) => {
+        setDashboardData(prevDashboardData => {
+          return prevDashboardData.map(item => {
+            if (item.target === target) {
+              item.isFetching = false;
+              item.data.jobId = jobId;
+              item.data.dateString = dateString;
+              item.data.report = data;
+            }
+            return item;
+          });
         });
-      });
-      let msg = '';
-      if (success) {
-        const sheetName = target;
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        const filename = `${target} ${dateString}.xlsx`;
-        try {
-          XLSX.writeFile(workbook, filename);
-          msg = `Каталог збережен в папці завантажень в файл ${filename}`;
-          newSocket.emit('setJobDone', TARGETS[0]);
-        } catch (error) {
-          msg = `Помилка під час збереження файлу: ${error?.message}`;
+        let msg = '';
+        if (success) {
+          const sheetName = target;
+          const worksheet = XLSX.utils.json_to_sheet(data);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+          const filename = `${target} ${dateString}.xlsx`;
+          try {
+            XLSX.writeFile(workbook, filename);
+            msg = `Каталог збережен в папці завантажень в файл ${filename}`;
+            newSocket.emit('setJobDone', jobId);
+          } catch (error) {
+            msg = `Помилка під час збереження файлу: ${error?.message}`;
+          }
+        } else {
+          msg = `Помилка під час стягування інформації: ${data}`;
         }
-      } else {
-        msg = `Помилка під час стягування інформації: ${data}`;
-      }
-      setDashboardData(prevDashboardData => {
-        return prevDashboardData.map(item => {
-          if (item.target === target) {
-            item.data.progressMsg.push(msg);
-          }
-          return item;
+        setDashboardData(prevDashboardData => {
+          return prevDashboardData.map(item => {
+            if (item.target === target) {
+              item.data.progressMsg.push(msg);
+            }
+            return item;
+          });
         });
-      });
-    });
+      }
+    );
 
     setSocket(newSocket);
 
@@ -128,15 +134,21 @@ function App() {
 
   return (
     <div>
+      <div style={{ color: 'white', paddingLeft: '1rem' }}>
+        <p>Корістувач: {USER_EMAIL}</p>
+      </div>
       <h1 style={{ color: 'white', textAlign: 'center' }}>
         Збирач даних із сайтів Постачальників
       </h1>
 
       <ConnectionStatusLine isConnected={isConnected} />
+
       {isConnected ? (
         <ScrappingDashboard
           user={USER_EMAIL}
           isConnected={isConnected}
+          isFetching={dashboardData[0].isFetching}
+          setIsFetching={setDashboardData}
           socket={socket}
           target={TARGETS[0]}
           data={dashboardData[0]}
@@ -144,6 +156,7 @@ function App() {
       ) : (
         <button onClick={handleRestoreConnection}>Restore Connection</button>
       )}
+      <Footer />
     </div>
   );
 }
