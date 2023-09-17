@@ -1,9 +1,4 @@
-import {
-  FaGithubSquare,
-  FaLinkedin,
-  FaTelegram,
-  FaSlack,
-} from 'react-icons/fa';
+import { FaGithubSquare, FaLinkedin, FaTelegram } from 'react-icons/fa';
 
 import './Footer.css';
 import '../../variables.css';
