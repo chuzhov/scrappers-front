@@ -11,7 +11,7 @@ function Header({ user }) {
           <GiOctopus size={26} className="user__icon" />
           <p>{user}</p>
         </div>
-        <div class="menu__wrapper">
+        <div className="menu__wrapper">
           <button>
             <LuMenu size={26} className="menu__icon" />
           </button>
