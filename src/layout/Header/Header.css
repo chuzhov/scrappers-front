@@ -1,0 +1,33 @@
+@import '../../variables.css';
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  color: var(--primary-color);
+  font-size: var(--primery-text-size);
+}
+
+.user__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.user__icon {
+  margin-right: 0.5rem;
+  color: var(--highlited-color);
+}
+
+.menu__wrapper {
+  margin-left: auto;
+  display: flex;
+}
+
+.header__title {
+  margin-bottom: 0.5rem;
+  color: var(--title-color);
+  font-size: var(--header-text-size);
+  text-align: center;
+}
