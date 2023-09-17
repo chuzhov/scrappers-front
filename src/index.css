@@ -38,3 +38,42 @@ h6 {
 ul {
   list-style-type: none;
 }
+
+button {
+  /* Remove default button styles */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  /* Reset specific styles that might vary across browsers */
+  appearance: none;
+  outline: none;
+  text-align: left;
+  text-decoration: none;
+  text-transform: none;
+  overflow: visible;
+  vertical-align: baseline;
+  box-sizing: border-box;
+
+  /* Reset box model properties */
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+
+  /* Reset pseudo-elements and pseudo-classes */
+  ::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
+  /* Additional styles for cross-browser consistency */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}

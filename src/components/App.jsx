@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import * as XLSX from 'xlsx';
+
+import handleReportGenStatusMsg from 'utils/handleReportStatusMsg';
+
+import Header from 'layout/Header/Header';
 import ConnectionStatusLine from './ConnectionStatusLine/ConnectionStatusLine';
 import ScrappingDashboard from './ScrappingDashboard/ScrappingDashboard';
-import handleReportGenStatusMsg from 'utils/handleReportStatusMsg';
-import Footer from './Fotter/Footer';
+import Footer from '../layout/Footer/Footer';
 
 const USER_EMAIL = 'some-email@gmail.com';
 //const SERVER_URL = 'http://127.0.0.1:4000';
@@ -134,12 +137,7 @@ function App() {
 
   return (
     <div>
-      <div style={{ color: 'white', paddingLeft: '1rem' }}>
-        <p>Корістувач: {USER_EMAIL}</p>
-      </div>
-      <h1 style={{ color: 'white', textAlign: 'center' }}>
-        Збирач даних із сайтів Постачальників
-      </h1>
+      <Header user={USER_EMAIL} />
 
       <ConnectionStatusLine isConnected={isConnected} />
 

@@ -1,12 +1,17 @@
 :root {
+  --title-color: rgb(256, 256, 256);
   --highlited-color: rgb(200, 210, 218);
   --primary-color: rgb(136, 146, 160);
+  --status-color: rgb(255, 255, 255);
+  --error-color: red;
 
   --target-EN-color: rgb(199, 21, 32);
 
-  --header-text-size: 16px;
+  --header-text-size: 24px;
   --primary-text-size: 14px;
   --secondary-text-size: 12px;
+
+  --icon-size: 26px;
 
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen';
