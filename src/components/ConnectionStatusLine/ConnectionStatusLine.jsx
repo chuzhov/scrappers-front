@@ -1,6 +1,7 @@
 import { LuServer, LuServerOff } from 'react-icons/lu';
 
 import './ConnectionStatusLine.css';
+import '../../variables.css';
 
 const CONNECTED_MSG = "З'єднання із сервером встановлено";
 const DISCONNECTED_MSG = "Немає зв'язку із сервером";
@@ -9,17 +10,9 @@ const ConnectionStatusLine = ({ isConnected }) => {
   return (
     <div className="status-wrapper">
       {isConnected ? (
-        <LuServer
-          color="#fff"
-          fontSize={27}
-          // onClick={() => setToggleMenu(true)}
-        />
+        <LuServer color="var(--title-color)" size={26} />
       ) : (
-        <LuServerOff
-          color="#fff"
-          fontSize={27}
-          // onClick={() => setToggleMenu(true)}
-        />
+        <LuServerOff color="var(--error-text-color)" size={26} />
       )}
 
       <p

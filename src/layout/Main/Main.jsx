@@ -123,6 +123,7 @@ function Main({ user }) {
     return () => {
       newSocket.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
   const handleRestoreConnection = () => {

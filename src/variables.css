@@ -2,8 +2,8 @@
   --title-color: rgb(256, 256, 256);
   --highlited-color: rgb(200, 210, 218);
   --primary-color: rgb(136, 146, 160);
-  --status-color: rgb(255, 255, 255);
-  --error-color: red;
+  --status-text-color: rgb(151, 176, 182);
+  --error-text-color: rgb(247, 71, 225);
 
   --target-EN-color: rgb(199, 21, 32);
 

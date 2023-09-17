@@ -1,3 +1,5 @@
+@import '../../variables.css';
+
 .status-wrapper {
   display: flex;
   align-items: center;
@@ -6,8 +8,8 @@
 }
 
 .connected-status-line {
-  color: rgb(151, 176, 182);
+  color: var(--status-text-color);
 }
 .disconnected-status-line {
-  color: rgb(247, 71, 225);
+  color: var(--error-text-color);
 }
