@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 import ProgressButton from 'react-progress-button';
+import { BsDatabaseFillCheck } from 'react-icons/bs';
 
 import './ScrappingDashboard.css';
+import toShorterDate from 'utils/toShorterDate';
 
 const ScrappingDashboard = ({
   user,
@@ -42,16 +44,29 @@ const ScrappingDashboard = ({
       <p className="dash__title">
         Сайт: <span className="dash__site-name">{data.target}</span>
       </p>
-      {data.previousDate && (
-        <>
-          <p className="dash__regular">
-            Час попереднього сканування: <span>{data.previousDate}</span>
+      <div className="dash__data">
+        {data.previousData.length > 0 ? (
+          <>
+            <p className="dash__data-string">
+              <BsDatabaseFillCheck size={16} color="var(--primary-color)" />
+              <span>{toShorterDate(data.previousData[0].reportCreatedAt)}</span>
+              <span>
+                завантажено строк в каталозі{' '}
+                <span>{data.previousData[0].dataLength}</span>
+              </span>
+            </p>
+          </>
+        ) : (
+          <p className="dash__data-string">
+            Стягуніть дані. Наступного разу їх можна буде порівняти з новими
           </p>
-          <p className="dash__regular">
-            Кількість строк в каталозі: <span>{data.previousLength}</span>
+        )}
+        {data.previousData.length > 0 ? (
+          <p className="dash__data-string">
+            Завантажте нові дані для порівняння
           </p>
-        </>
-      )}
+        ) : null}
+      </div>
       <div>
         <ProgressButton
           onClick={handleGetData}

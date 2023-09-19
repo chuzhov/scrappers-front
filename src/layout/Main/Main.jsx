@@ -22,10 +22,15 @@ function Main({ user }) {
       jobId: null,
       progressMsg: [],
       dateString: '',
-      report: null,
+      report: [],
     },
-    previousDate: '',
-    previousLength: 0,
+    previousData: [
+      {
+        reportCreatedAt: null,
+        dataLength: 0,
+        report: [],
+      },
+    ],
   }));
   /* eslint-enable */
   const [dashboardData, setDashboardData] = useState(INIT_DASH_STATE);
@@ -36,12 +41,33 @@ function Main({ user }) {
       reconnectionAttempts: 2,
       query: {
         email: user,
+        targets: JSON.stringify(TARGETS),
       },
     });
 
     newSocket.on('connect', () => {
       console.log('Connected to my server.');
       setIsConnected(true);
+    });
+
+    newSocket.on('previousJobs', previousJobs => {
+      console.log('Getting previous jobs.');
+      console.dir(previousJobs);
+      setDashboardData(prevDashboardData => {
+        prevDashboardData.forEach(item => {
+          item.previousData = [];
+        });
+        for (let i = 0; i < previousJobs.length; i++) {
+          prevDashboardData[
+            TARGETS.indexOf(previousJobs[i].target)
+          ].previousData.push({
+            reportCreatedAt: previousJobs[i].reportCreatedAt,
+            dataLength: previousJobs[i].dataLength,
+            report: previousJobs[i].data,
+          });
+        }
+        return prevDashboardData;
+      });
     });
 
     newSocket.on('status', ({ target, jobStatus }) => {
