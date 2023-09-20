@@ -52,23 +52,30 @@ function Main({ user }) {
 
     newSocket.on('previousJobs', previousJobs => {
       console.log('Getting previous jobs.');
-      console.dir(previousJobs);
-      setDashboardData(prevDashboardData => {
-        prevDashboardData.forEach(item => {
-          item.previousData = [];
+      previousJobs.forEach((jobs, target) => {
+        console.dir(jobs);
+        setDashboardData(prevDashboardData => {
+          prevDashboardData[target].previousData = jobs;
+          return { ...prevDashboardData };
         });
-        for (let i = 0; i < previousJobs.length; i++) {
-          prevDashboardData[
-            TARGETS.indexOf(previousJobs[i].target)
-          ].previousData.push({
-            reportCreatedAt: previousJobs[i].reportCreatedAt,
-            dataLength: previousJobs[i].dataLength,
-            report: previousJobs[i].data,
-          });
-        }
-        return prevDashboardData;
       });
     });
+
+    // setDashboardData(prevDashboardData => {
+    //   prevDashboardData.forEach(item => {
+    //     item.previousData = [];
+    //   });
+    //   for (let i = 0; i < previousJobs.length; i++) {
+    //     prevDashboardData[
+    //       TARGETS.indexOf(previousJobs[i].target)
+    //     ].previousData.push({
+    //       reportCreatedAt: previousJobs[i].reportCreatedAt,
+    //       dataLength: previousJobs[i].dataLength,
+    //       report: previousJobs[i].data,
+    //     });
+    //   }
+    //   return prevDashboardData;
+    // });
 
     newSocket.on('status', ({ target, jobStatus }) => {
       if (jobStatus === 'scrapping') {
