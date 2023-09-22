@@ -26,19 +26,6 @@
   color: var(--target-EN-color);
   font-weight: bold;
 }
-.dash__data {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  color: var(--primary-color);
-}
-
-.dash__data-string {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--primary-text-size);
-}
 
 .scraper-progress {
   color: var(--primary-color);

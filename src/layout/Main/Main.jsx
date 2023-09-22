@@ -8,7 +8,7 @@ import ConnectionStatusLine from '../../components/ConnectionStatusLine/Connecti
 import ScrappingDashboard from '../../components/ScrappingDashboard/ScrappingDashboard';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-const TARGETS = ['EN'];
+const TARGETS = ['EN', 'EA'];
 
 function Main({ user }) {
   const [socket, setSocket] = useState(null);
@@ -52,37 +52,31 @@ function Main({ user }) {
 
     newSocket.on('previousJobs', previousJobs => {
       console.log('Getting previous jobs.');
-      previousJobs.forEach((jobs, target) => {
-        console.dir(jobs);
-        setDashboardData(prevDashboardData => {
-          prevDashboardData[target].previousData = jobs;
-          return { ...prevDashboardData };
+      setDashboardData(prevDashboardData => {
+        return prevDashboardData.map((item, target) => {
+          if (target < previousJobs.length) {
+            // Create a copy of the item with the updated property
+            return {
+              ...item,
+              previousData: previousJobs[target],
+            };
+          }
+          return item; // No change for items beyond the length of previousJobs
         });
       });
     });
 
-    // setDashboardData(prevDashboardData => {
-    //   prevDashboardData.forEach(item => {
-    //     item.previousData = [];
-    //   });
-    //   for (let i = 0; i < previousJobs.length; i++) {
-    //     prevDashboardData[
-    //       TARGETS.indexOf(previousJobs[i].target)
-    //     ].previousData.push({
-    //       reportCreatedAt: previousJobs[i].reportCreatedAt,
-    //       dataLength: previousJobs[i].dataLength,
-    //       report: previousJobs[i].data,
-    //     });
-    //   }
-    //   return prevDashboardData;
-    // });
-
     newSocket.on('status', ({ target, jobStatus }) => {
       if (jobStatus === 'scrapping') {
         setDashboardData(prevDashboardData => {
+          console.log('status PDD ', prevDashboardData);
           return prevDashboardData.map(item => {
             if (item.target === target) {
-              item.isFetching = true;
+              // Create a new object with the updated isFetching property
+              return {
+                ...item,
+                isFetching: true,
+              };
             }
             return item;
           });
@@ -98,10 +92,18 @@ function Main({ user }) {
     newSocket.on('reportGenStatus', ({ target, msg }) => {
       const formattedMsg = handleReportGenStatusMsg(msg);
       setDashboardData(prevDashboardData => {
+        console.log('reportGenStatus', prevDashboardData);
         return prevDashboardData.map(item => {
           if (item.target === target) {
             console.log(formattedMsg);
-            item.data.progressMsg.push(formattedMsg);
+            // Create a new object with the updated progressMsg property
+            return {
+              ...item,
+              data: {
+                ...item.data,
+                progressMsg: [...item.data.progressMsg, formattedMsg],
+              },
+            };
           }
           return item;
         });
@@ -113,16 +115,25 @@ function Main({ user }) {
       'reportGenerated',
       ({ jobId, target, success, data, dateString }) => {
         setDashboardData(prevDashboardData => {
+          console.log('reportGenerated PDD', prevDashboardData);
           return prevDashboardData.map(item => {
             if (item.target === target) {
-              item.isFetching = false;
-              item.data.jobId = jobId;
-              item.data.dateString = dateString;
-              item.data.report = data;
+              // Create a new object with the updated properties
+              return {
+                ...item,
+                isFetching: false,
+                data: {
+                  ...item.data,
+                  jobId,
+                  dateString,
+                  report: data,
+                },
+              };
             }
             return item;
           });
         });
+
         let msg = '';
         if (success) {
           const sheetName = target;
@@ -141,9 +152,17 @@ function Main({ user }) {
           msg = `Помилка під час стягування інформації: ${data}`;
         }
         setDashboardData(prevDashboardData => {
+          console.log('reportGenerated PDD2', prevDashboardData);
           return prevDashboardData.map(item => {
             if (item.target === target) {
-              item.data.progressMsg.push(msg);
+              // Create a new object with the updated progressMsg property
+              return {
+                ...item,
+                data: {
+                  ...item.data,
+                  progressMsg: [...item.data.progressMsg, msg],
+                },
+              };
             }
             return item;
           });
