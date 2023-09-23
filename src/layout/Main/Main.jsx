@@ -7,7 +7,10 @@ import handleReportGenStatusMsg from 'utils/handleReportStatusMsg';
 import ConnectionStatusLine from '../../components/ConnectionStatusLine/ConnectionStatusLine';
 import ScrappingDashboard from '../../components/ScrappingDashboard/ScrappingDashboard';
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:4000'
+    : process.env.REACT_APP_SERVER_URL;
 const TARGETS = ['EN', 'EA'];
 
 function Main({ user }) {
