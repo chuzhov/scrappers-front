@@ -1,0 +1,23 @@
+@import '../../variables.css';
+
+.dash__info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dash__info-icon {
+  width: 1.5rem;
+}
+
+.dash__info-statusline {
+  color: var(--primary-color);
+  font-size: var(--primary-text-size);
+}
+
+.dash__info-highlited-data {
+  color: var(--highlited-color);
+}
+.dash__info-data {
+  color: var(--primary-color);
+}

@@ -11,7 +11,7 @@ const SERVER_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:4000'
     : process.env.REACT_APP_SERVER_URL;
-const TARGETS = ['EN', 'EA'];
+const TARGETS = ['EN'];
 
 function Main({ user }) {
   const [socket, setSocket] = useState(null);

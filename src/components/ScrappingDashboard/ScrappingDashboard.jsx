@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import ProgressButton from 'react-progress-button';
 
 import './ScrappingDashboard.css';
-import toShorterDate from 'utils/toShorterDate';
+// import toShorterDate from 'utils/toShorterDate';
 import DashInfoLine from 'components/DashInfoLine/DashInfoLine';
 
 const ScrappingDashboard = ({
